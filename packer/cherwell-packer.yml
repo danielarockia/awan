@@ -1,0 +1,37 @@
+# TODO: Replace runtime variable with runtime parameters once released:
+# https://docs.microsoft.com/en-us/azure/devops/pipelines/process/runtime-parameters?view=azure-devops
+
+name: "$(Date:yyyyMMdd)-$(nodetype)"
+
+pool:
+  name: Ubuntu20
+
+trigger:
+  - none
+
+resources:
+  repositories: 
+    - repository: product-salt
+      type: git
+      name: 'ISM/ism-salt'
+    - repository: product-pillar
+      type: git
+      name: 'ISM/ism-pillar'
+    - repository: salt-formulas
+      type: git
+      name: 'DevOps/salt-formulas'
+    - repository: packer
+      type: git
+      name: 'DevOps/packer'
+      
+jobs: 
+  - template: /pipelines/template_packer_build_azure.yml@packer
+    parameters:
+      nodetype: "$(nodetype)"
+      os: "$(os)"
+      service_connection: "azure-terraform-cherwell-apply"
+      product_name: "ism"
+      product_description: "Ivanti Service Manager"
+      salt_repo_name: "ism-salt"
+      pillar_repo_name: "ism-pillar"
+      gpg_key_name: "salt-ism.key"

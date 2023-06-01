@@ -1,0 +1,39 @@
+# TODO: Replace runtime variable with runtime parameters once released:
+# https://docs.microsoft.com/en-us/azure/devops/pipelines/process/runtime-parameters?view=azure-devops
+
+name: "$(Date:yyyyMMdd)-$(nodetype)"
+
+pool:
+  name: Ubuntu20
+
+trigger:
+  - none
+
+resources:
+  repositories: 
+    - repository: product-salt
+      type: git
+      name: 'ISM/ism-salt'
+    - repository: product-pillar
+      type: git
+      name: 'ISM/ism-pillar'
+    - repository: salt-formulas
+      type: git
+      name: 'DevOps/salt-formulas'
+    - repository: packer
+      type: git
+      name: 'DevOps/packer'
+      
+jobs: 
+  - template: /pipelines/template_packer_build_aws.yml@packer
+    parameters:
+      nodetype: "$(nodetype)"
+      ami_id: "$(ami_id)" # ami-0f969b429284d6156 for windows, ami-02eac2c0129f6376b for linux in us-east-1 region
+      os: "$(os)"
+      region: "us-east-1"
+      service_connection: "aws-sandbox"
+      product_name: "ism"
+      product_description: "Ivanti Service Manager"
+      salt_repo_name: "ism-salt"
+      pillar_repo_name: "ism-pillar"
+      gpg_key_name: "salt-ism.key"
