@@ -1,0 +1,29 @@
+name: $(Date:yyyyMMdd)
+
+pool:
+  name: Ubuntu20
+  
+resources:
+  repositories: 
+    - repository: product-terraform
+      type: git
+      name: 'ISM/ism-aws-terraform'
+    - repository: terraform-modules
+      type: git
+      name: 'DevOps/terraform-modules'
+
+trigger:
+  - none
+  
+stages:
+  - template: /pipeline_templates/terraform_destroy.yml@terraform-modules
+    parameters:
+        cloud: "aws"      
+        tfstack_path: "ism-aws-terraform/prd"
+        tfstate_bucket: "ivanti-frsops-terraform-states"
+        tfstate_key: "ism/prd-irl"
+        tfvars_name: "prd-irl"
+        service_connection_plan: "aws-terraform-frsops-plan"
+        service_connection_apply: "aws-terraform-frsops-apply"
+        service_connection_security: "aws-terraform-frsops-security"
+  

@@ -1,0 +1,42 @@
+name: $(Date:yyyyMMdd)
+
+pool:
+  name: Ubuntu20
+  
+resources:
+  repositories: 
+    - repository: product-terraform
+      type: git
+      name: 'DevOps/terraform-states'
+    - repository: terraform-modules
+      type: git
+      name: 'DevOps/terraform-modules'
+
+trigger:
+  - none
+  
+stages:
+  - stage: "Terraform_Plan"
+    dependsOn: []
+    jobs: 
+      - template: /pipeline_templates/terraform_jobs_aws.yml@terraform-modules
+        parameters:
+          tf_command: "plan"
+          tfstack_name: "common_stack"
+          tfstack_path: "terraform-states/aws"
+          tfstate_bucket: "ivanti-frsops-terraform-states"
+          tfstate_key: "terraform_states"
+          tfvars_name: "frsops"
+          service_connection: "aws-terraform-frsops-plan"
+  - stage: "Terraform_Apply"
+    dependsOn: "Terraform_Plan"
+    jobs: 
+      - template: /pipeline_templates/terraform_jobs_aws.yml@terraform-modules
+        parameters:
+          tf_command: "apply"
+          tfstack_name: "common_stack"
+          tfstack_path: "terraform-states/aws"
+          tfstate_bucket: "ivanti-frsops-terraform-states"
+          tfstate_key: "terraform_states"
+          tfvars_name: "frsops"
+          service_connection: "aws-terraform-frsops-security"

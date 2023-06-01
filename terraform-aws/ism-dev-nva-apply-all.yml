@@ -1,0 +1,93 @@
+name: $(Date:yyyyMMdd)
+
+pool:
+  name: Ubuntu20
+  
+resources:
+  repositories: 
+    - repository: product-terraform
+      type: git
+      name: 'ISM/ism-aws-terraform'
+    - repository: terraform-modules
+      type: git
+      name: 'DevOps/terraform-modules'
+
+trigger:
+  - none
+  
+stages:
+  - stage: "Plan_network_stack"
+    dependsOn: []
+    jobs: 
+      - template: /pipeline_templates/terraform_jobs_aws.yml@terraform-modules
+        parameters:
+          tf_command: "plan"
+          tfstack_name: "network_stack"
+          tfstack_path: "ism-aws-terraform/all"
+          tfstate_bucket: "ivanti-frsops-terraform-states"
+          tfstate_key: "ism/all-nva-dev"
+          tfvars_name: "nva-dev"
+          service_connection: "aws-terraform-frsops-plan"
+  - stage: "Apply_network_stack"
+    dependsOn: "Plan_network_stack"
+    jobs: 
+      - template: /pipeline_templates/terraform_jobs_aws.yml@terraform-modules
+        parameters:
+          tf_command: "apply"
+          tfstack_name: "network_stack"
+          tfstack_path: "ism-aws-terraform/all"
+          tfstate_bucket: "ivanti-frsops-terraform-states"
+          tfstate_key: "ism/all-nva-dev"
+          tfvars_name: "nva-dev"
+          service_connection: "aws-terraform-frsops-apply"
+  - stage: "Plan_security_stack"
+    dependsOn: []
+    jobs: 
+      - template: /pipeline_templates/terraform_jobs_aws.yml@terraform-modules
+        parameters:
+          tf_command: "plan"
+          tfstack_name: "security_stack"
+          tfstack_path: "ism-aws-terraform/all"
+          tfstate_bucket: "ivanti-frsops-terraform-states"
+          tfstate_key: "ism/all-nva-dev"
+          tfvars_name: "nva-dev"
+          service_connection: "aws-terraform-frsops-plan"
+  - stage: "Apply_security_stack"
+    dependsOn: "Plan_security_stack"
+    jobs: 
+      - template: /pipeline_templates/terraform_jobs_aws.yml@terraform-modules
+        parameters:
+          tf_command: "apply"
+          tfstack_name: "security_stack"
+          tfstack_path: "ism-aws-terraform/all"
+          tfstate_bucket: "ivanti-frsops-terraform-states"
+          tfstate_key: "ism/all-nva-dev"
+          tfvars_name: "nva-dev"
+          service_connection: "aws-terraform-frsops-security"
+  - stage: "Plan_core_stack"
+    dependsOn: 
+      - "Apply_network_stack"
+      - "Apply_security_stack"
+    jobs: 
+      - template: /pipeline_templates/terraform_jobs_aws.yml@terraform-modules
+        parameters:
+          tf_command: "plan"
+          tfstack_name: "core_stack"
+          tfstack_path: "ism-aws-terraform/all"
+          tfstate_bucket: "ivanti-frsops-terraform-states"
+          tfstate_key: "ism/all-nva-dev"
+          tfvars_name: "nva-dev"
+          service_connection: "aws-terraform-frsops-plan"
+  - stage: "Apply_core_stack"
+    dependsOn: "Plan_core_stack"
+    jobs: 
+      - template: /pipeline_templates/terraform_jobs_aws.yml@terraform-modules
+        parameters:
+          tf_command: "apply"
+          tfstack_name: "core_stack"
+          tfstack_path: "ism-aws-terraform/all"
+          tfstate_bucket: "ivanti-frsops-terraform-states"
+          tfstate_key: "ism/all-nva-dev"
+          tfvars_name: "nva-dev"
+          service_connection: "aws-terraform-frsops-apply"
+  
