@@ -1,0 +1,298 @@
+name: $(Date:yyyyMMdd)
+
+pool:
+  name: Ubuntu20
+  
+resources:
+  repositories: 
+    - repository: product-terraform
+      type: git
+      name: 'ISM/ism-azure-terraform'
+    - repository: terraform-modules
+      type: git
+      name: 'DevOps/terraform-modules'
+
+trigger:
+  - none
+
+stages:
+  - stage: "Plan_IRZ_MAIN"
+    dependsOn: []
+    jobs: 
+      - template: /pipeline_templates/terraform_jobs_azure.yml@terraform-modules
+        parameters:
+          tf_command: "plan"
+          tfstack_name: "common_stack"
+          tfstack_path: "ism-azure-terraform/main"
+          tfstate_resource_group: 'esm-terraform-states'
+          tfstate_storage_account: 'esmterraformstates'
+          tfstate_container: 'esm-terraform-states'   
+          tfstate_key: "irz-main"
+          tfvars_name: "irz-main"
+          service_connection: "azure-terraform-esm-plan"
+  - stage: "Apply_IRZ_MAIN"
+    dependsOn: "Plan_IRZ_MAIN"
+    jobs: 
+      - template: /pipeline_templates/terraform_jobs_azure.yml@terraform-modules
+        parameters:
+          tf_command: "apply"
+          tfstack_name: "common_stack"
+          tfstack_path: "ism-azure-terraform/main"
+          tfstate_resource_group: 'esm-terraform-states'
+          tfstate_storage_account: 'esmterraformstates'
+          tfstate_container: 'esm-terraform-states'             
+          tfstate_key: "irz-main"
+          tfvars_name: "irz-main"
+          service_connection: "azure-terraform-esm-apply"
+  - stage: "Plan_NVZ_MAIN"
+    dependsOn: []
+    jobs: 
+      - template: /pipeline_templates/terraform_jobs_azure.yml@terraform-modules
+        parameters:
+          tf_command: "plan"
+          tfstack_name: "common_stack"
+          tfstack_path: "ism-azure-terraform/main"
+          tfstate_resource_group: 'esm-terraform-states'
+          tfstate_storage_account: 'esmterraformstates'
+          tfstate_container: 'esm-terraform-states'   
+          tfstate_key: "nvz-main"
+          tfvars_name: "nvz-main"
+          service_connection: "azure-terraform-esm-plan"
+  - stage: "Apply_NVZ_MAIN"
+    dependsOn: "Plan_NVZ_MAIN"
+    jobs: 
+      - template: /pipeline_templates/terraform_jobs_azure.yml@terraform-modules
+        parameters:
+          tf_command: "apply"
+          tfstack_name: "common_stack"
+          tfstack_path: "ism-azure-terraform/main"
+          tfstate_resource_group: 'esm-terraform-states'
+          tfstate_storage_account: 'esmterraformstates'
+          tfstate_container: 'esm-terraform-states'             
+          tfstate_key: "nvz-main"
+          tfvars_name: "nvz-main"
+          service_connection: "azure-terraform-esm-apply"
+  - stage: "Plan_LDZ_MAIN"
+    dependsOn: []
+    jobs: 
+      - template: /pipeline_templates/terraform_jobs_azure.yml@terraform-modules
+        parameters:
+          tf_command: "plan"
+          tfstack_name: "common_stack"
+          tfstack_path: "ism-azure-terraform/main"
+          tfstate_resource_group: 'esm-terraform-states'
+          tfstate_storage_account: 'esmterraformstates'
+          tfstate_container: 'esm-terraform-states'   
+          tfstate_key: "ldz-main"
+          tfvars_name: "ldz-main"
+          service_connection: "azure-terraform-esm-plan"
+  - stage: "Apply_LDZ_MAIN"
+    dependsOn: "Plan_LDZ_MAIN"
+    jobs: 
+      - template: /pipeline_templates/terraform_jobs_azure.yml@terraform-modules
+        parameters:
+          tf_command: "apply"
+          tfstack_name: "common_stack"
+          tfstack_path: "ism-azure-terraform/main"
+          tfstate_resource_group: 'esm-terraform-states'
+          tfstate_storage_account: 'esmterraformstates'
+          tfstate_container: 'esm-terraform-states'             
+          tfstate_key: "ldz-main"
+          tfvars_name: "ldz-main"
+          service_connection: "azure-terraform-esm-apply"
+  - stage: "Plan_NSZ_MAIN"
+    dependsOn: []
+    jobs: 
+      - template: /pipeline_templates/terraform_jobs_azure.yml@terraform-modules
+        parameters:
+          tf_command: "plan"
+          tfstack_name: "common_stack"
+          tfstack_path: "ism-azure-terraform/main"
+          tfstate_resource_group: 'esm-terraform-states'
+          tfstate_storage_account: 'esmterraformstates'
+          tfstate_container: 'esm-terraform-states'   
+          tfstate_key: "nsz-main"
+          tfvars_name: "nsz-main"
+          service_connection: "azure-terraform-esm-plan"
+  - stage: "Apply_NSZ_MAIN"
+    dependsOn: "Plan_NSZ_MAIN"
+    jobs: 
+      - template: /pipeline_templates/terraform_jobs_azure.yml@terraform-modules
+        parameters:
+          tf_command: "apply"
+          tfstack_name: "common_stack"
+          tfstack_path: "ism-azure-terraform/main"
+          tfstate_resource_group: 'esm-terraform-states'
+          tfstate_storage_account: 'esmterraformstates'
+          tfstate_container: 'esm-terraform-states'             
+          tfstate_key: "nsz-main"
+          tfvars_name: "nsz-main"
+          service_connection: "azure-terraform-esm-apply"
+  - stage: "Plan_VIZ_MAIN"
+    dependsOn: []
+    jobs: 
+      - template: /pipeline_templates/terraform_jobs_azure.yml@terraform-modules
+        parameters:
+          tf_command: "plan"
+          tfstack_name: "common_stack"
+          tfstack_path: "ism-azure-terraform/main"
+          tfstate_resource_group: 'esm-terraform-states'
+          tfstate_storage_account: 'esmterraformstates'
+          tfstate_container: 'esm-terraform-states'   
+          tfstate_key: "viz-main"
+          tfvars_name: "viz-main"
+          service_connection: "azure-terraform-esm-plan"
+  - stage: "Apply_VIZ_MAIN"
+    dependsOn: "Plan_VIZ_MAIN"
+    jobs: 
+      - template: /pipeline_templates/terraform_jobs_azure.yml@terraform-modules
+        parameters:
+          tf_command: "apply"
+          tfstack_name: "common_stack"
+          tfstack_path: "ism-azure-terraform/main"
+          tfstate_resource_group: 'esm-terraform-states'
+          tfstate_storage_account: 'esmterraformstates'
+          tfstate_container: 'esm-terraform-states'             
+          tfstate_key: "viz-main"
+          tfvars_name: "viz-main"
+          service_connection: "azure-terraform-esm-apply"
+  - stage: "Plan_CDZ_MAIN"
+    dependsOn: []
+    jobs: 
+      - template: /pipeline_templates/terraform_jobs_azure.yml@terraform-modules
+        parameters:
+          tf_command: "plan"
+          tfstack_name: "common_stack"
+          tfstack_path: "ism-azure-terraform/main"
+          tfstate_resource_group: 'esm-terraform-states'
+          tfstate_storage_account: 'esmterraformstates'
+          tfstate_container: 'esm-terraform-states'   
+          tfstate_key: "cdz-main"
+          tfvars_name: "cdz-main"
+          service_connection: "azure-terraform-esm-plan"
+  - stage: "Apply_CDZ_MAIN"
+    dependsOn: "Plan_CDZ_MAIN"
+    jobs: 
+      - template: /pipeline_templates/terraform_jobs_azure.yml@terraform-modules
+        parameters:
+          tf_command: "apply"
+          tfstack_name: "common_stack"
+          tfstack_path: "ism-azure-terraform/main"
+          tfstate_resource_group: 'esm-terraform-states'
+          tfstate_storage_account: 'esmterraformstates'
+          tfstate_container: 'esm-terraform-states'             
+          tfstate_key: "cdz-main"
+          tfvars_name: "cdz-main"
+          service_connection: "azure-terraform-esm-apply"                               
+  - stage: "Plan_WAZ_MAIN"
+    dependsOn: []
+    jobs: 
+      - template: /pipeline_templates/terraform_jobs_azure.yml@terraform-modules
+        parameters:
+          tf_command: "plan"
+          tfstack_name: "common_stack"
+          tfstack_path: "ism-azure-terraform/main"
+          tfstate_resource_group: 'esm-terraform-states'
+          tfstate_storage_account: 'esmterraformstates'
+          tfstate_container: 'esm-terraform-states'   
+          tfstate_key: "waz-main"
+          tfvars_name: "waz-main"
+          service_connection: "azure-terraform-esm-plan"
+  - stage: "Apply_WAZ_MAIN"
+    dependsOn: "Plan_WAZ_MAIN"
+    jobs: 
+      - template: /pipeline_templates/terraform_jobs_azure.yml@terraform-modules
+        parameters:
+          tf_command: "apply"
+          tfstack_name: "common_stack"
+          tfstack_path: "ism-azure-terraform/main"
+          tfstate_resource_group: 'esm-terraform-states'
+          tfstate_storage_account: 'esmterraformstates'
+          tfstate_container: 'esm-terraform-states'             
+          tfstate_key: "waz-main"
+          tfvars_name: "waz-main"
+          service_connection: "azure-terraform-esm-apply"
+  - stage: "Plan_FFZ_MAIN"
+    dependsOn: []
+    jobs: 
+      - template: /pipeline_templates/terraform_jobs_azure.yml@terraform-modules
+        parameters:
+          tf_command: "plan"
+          tfstack_name: "common_stack"
+          tfstack_path: "ism-azure-terraform/main"
+          tfstate_resource_group: 'esm-terraform-states'
+          tfstate_storage_account: 'esmterraformstates'
+          tfstate_container: 'esm-terraform-states'   
+          tfstate_key: "ffz-main"
+          tfvars_name: "ffz-main"
+          service_connection: "azure-terraform-esm-plan"
+  - stage: "Apply_FFZ_MAIN"
+    dependsOn: "Plan_FFZ_MAIN"
+    jobs: 
+      - template: /pipeline_templates/terraform_jobs_azure.yml@terraform-modules
+        parameters:
+          tf_command: "apply"
+          tfstack_name: "common_stack"
+          tfstack_path: "ism-azure-terraform/main"
+          tfstate_resource_group: 'esm-terraform-states'
+          tfstate_storage_account: 'esmterraformstates'
+          tfstate_container: 'esm-terraform-states'             
+          tfstate_key: "ffz-main"
+          tfvars_name: "ffz-main"
+          service_connection: "azure-terraform-esm-apply"
+  - stage: "Plan_TTZ_MAIN"
+    dependsOn: []
+    jobs: 
+      - template: /pipeline_templates/terraform_jobs_azure.yml@terraform-modules
+        parameters:
+          tf_command: "plan"
+          tfstack_name: "common_stack"
+          tfstack_path: "ism-azure-terraform/main"
+          tfstate_resource_group: 'esm-terraform-states'
+          tfstate_storage_account: 'esmterraformstates'
+          tfstate_container: 'esm-terraform-states'   
+          tfstate_key: "ttz-main"
+          tfvars_name: "ttz-main"
+          service_connection: "azure-terraform-esm-plan"
+  - stage: "Apply_TTZ_MAIN"
+    dependsOn: "Plan_TTZ_MAIN"
+    jobs: 
+      - template: /pipeline_templates/terraform_jobs_azure.yml@terraform-modules
+        parameters:
+          tf_command: "apply"
+          tfstack_name: "common_stack"
+          tfstack_path: "ism-azure-terraform/main"
+          tfstate_resource_group: 'esm-terraform-states'
+          tfstate_storage_account: 'esmterraformstates'
+          tfstate_container: 'esm-terraform-states'             
+          tfstate_key: "ttz-main"
+          tfvars_name: "ttz-main"
+          service_connection: "azure-terraform-esm-apply"
+  - stage: "Plan_QCZ_MAIN"
+    dependsOn: []
+    jobs: 
+      - template: /pipeline_templates/terraform_jobs_azure.yml@terraform-modules
+        parameters:
+          tf_command: "plan"
+          tfstack_name: "common_stack"
+          tfstack_path: "ism-azure-terraform/main"
+          tfstate_resource_group: 'esm-terraform-states'
+          tfstate_storage_account: 'esmterraformstates'
+          tfstate_container: 'esm-terraform-states'   
+          tfstate_key: "qcz-main"
+          tfvars_name: "qcz-main"
+          service_connection: "azure-terraform-esm-plan"
+  - stage: "Apply_QCZ_MAIN"
+    dependsOn: "Plan_QCZ_MAIN"
+    jobs: 
+      - template: /pipeline_templates/terraform_jobs_azure.yml@terraform-modules
+        parameters:
+          tf_command: "apply"
+          tfstack_name: "common_stack"
+          tfstack_path: "ism-azure-terraform/main"
+          tfstate_resource_group: 'esm-terraform-states'
+          tfstate_storage_account: 'esmterraformstates'
+          tfstate_container: 'esm-terraform-states'             
+          tfstate_key: "qcz-main"
+          tfvars_name: "qcz-main"
+          service_connection: "azure-terraform-esm-apply"                    

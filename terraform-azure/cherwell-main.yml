@@ -1,0 +1,134 @@
+name: $(Date:yyyyMMdd)
+
+pool:
+  name: Ubuntu20
+  
+resources:
+  repositories: 
+    - repository: product-terraform
+      type: git
+      name: 'ISM/ism-azure-terraform'
+    - repository: terraform-modules
+      type: git
+      name: 'DevOps/terraform-modules'
+    - repository: tfm-k8s
+      type: git
+      name: TFM/terraform-provisioner-k8s
+      ref: refs/tags/ism
+
+trigger:
+  - none
+
+stages:
+  - stage: "Plan_NVW_MAIN"
+    dependsOn: []
+    jobs: 
+      - template: /pipeline_templates/terraform_jobs_azure.yml@terraform-modules
+        parameters:
+          tf_command: "plan"
+          tfstack_name: "common_stack"
+          tfstack_path: "ism-azure-terraform/main"
+          tfstate_resource_group: 'esmcw-terraform-states'
+          tfstate_storage_account: 'esmcwterraformstates'
+          tfstate_container: 'esmcw-terraform-states'   
+          tfstate_key: "nvw-main"
+          tfvars_name: "nvw-main"
+          service_connection: "azure-terraform-cherwell-plan"
+  - stage: "Apply_NVW_MAIN"
+    dependsOn: "Plan_NVW_MAIN"
+    jobs: 
+      - template: /pipeline_templates/terraform_jobs_azure.yml@terraform-modules
+        parameters:
+          tf_command: "apply"
+          tfstack_name: "common_stack"
+          tfstack_path: "ism-azure-terraform/main"
+          tfstate_resource_group: 'esmcw-terraform-states'
+          tfstate_storage_account: 'esmcwterraformstates'
+          tfstate_container: 'esmcw-terraform-states'             
+          tfstate_key: "nvw-main"
+          tfvars_name: "nvw-main"
+          service_connection: "azure-terraform-cherwell-apply"
+  - stage: "Plan_IRW_MAIN"
+    dependsOn: []
+    jobs: 
+      - template: /pipeline_templates/terraform_jobs_azure.yml@terraform-modules
+        parameters:
+          tf_command: "plan"
+          tfstack_name: "common_stack"
+          tfstack_path: "ism-azure-terraform/main"
+          tfstate_resource_group: 'esmcw-terraform-states'
+          tfstate_storage_account: 'esmcwterraformstates'
+          tfstate_container: 'esmcw-terraform-states'   
+          tfstate_key: "irw-main"
+          tfvars_name: "irw-main"
+          service_connection: "azure-terraform-cherwell-plan"
+  - stage: "Apply_IRW_MAIN"
+    dependsOn: "Plan_IRW_MAIN"
+    jobs: 
+      - template: /pipeline_templates/terraform_jobs_azure.yml@terraform-modules
+        parameters:
+          tf_command: "apply"
+          tfstack_name: "common_stack"
+          tfstack_path: "ism-azure-terraform/main"
+          tfstate_resource_group: 'esmcw-terraform-states'
+          tfstate_storage_account: 'esmcwterraformstates'
+          tfstate_container: 'esmcw-terraform-states'             
+          tfstate_key: "irw-main"
+          tfvars_name: "irw-main"
+          service_connection: "azure-terraform-cherwell-apply"
+  - stage: "Plan_FFW_MAIN"
+    dependsOn: []
+    jobs: 
+      - template: /pipeline_templates/terraform_jobs_azure.yml@terraform-modules
+        parameters:
+          tf_command: "plan"
+          tfstack_name: "common_stack"
+          tfstack_path: "ism-azure-terraform/main"
+          tfstate_resource_group: 'esmcw-terraform-states'
+          tfstate_storage_account: 'esmcwterraformstates'
+          tfstate_container: 'esmcw-terraform-states'   
+          tfstate_key: "ffw-main"
+          tfvars_name: "ffw-main"
+          service_connection: "azure-terraform-cherwell-plan"
+  - stage: "Apply_FFW_MAIN"
+    dependsOn: "Plan_FFW_MAIN"
+    jobs: 
+      - template: /pipeline_templates/terraform_jobs_azure.yml@terraform-modules
+        parameters:
+          tf_command: "apply"
+          tfstack_name: "common_stack"
+          tfstack_path: "ism-azure-terraform/main"
+          tfstate_resource_group: 'esmcw-terraform-states'
+          tfstate_storage_account: 'esmcwterraformstates'
+          tfstate_container: 'esmcw-terraform-states'             
+          tfstate_key: "ffw-main"
+          tfvars_name: "ffw-main"
+          service_connection: "azure-terraform-cherwell-apply"
+  - stage: "Plan_NVW_DEVMAIN"
+    dependsOn: []
+    jobs: 
+      - template: /pipeline_templates/terraform_jobs_azure.yml@terraform-modules
+        parameters:
+          tf_command: "plan"
+          tfstack_name: "common_stack"
+          tfstack_path: "ism-azure-terraform/main"
+          tfstate_resource_group: 'esmcw-terraform-states'
+          tfstate_storage_account: 'esmcwterraformstates'
+          tfstate_container: 'esmcw-terraform-states'   
+          tfstate_key: "nvw-devmain"
+          tfvars_name: "nvw-devmain"
+          service_connection: "azure-terraform-cherwell-plan"
+  - stage: "Apply_NVW_DEVMAIN"
+    dependsOn: "Plan_NVW_DEVMAIN"
+    jobs: 
+      - template: /pipeline_templates/terraform_jobs_azure.yml@terraform-modules
+        parameters:
+          tf_command: "apply"
+          tfstack_name: "common_stack"
+          tfstack_path: "ism-azure-terraform/main"
+          tfstate_resource_group: 'esmcw-terraform-states'
+          tfstate_storage_account: 'esmcwterraformstates'
+          tfstate_container: 'esmcw-terraform-states'             
+          tfstate_key: "nvw-devmain"
+          tfvars_name: "nvw-devmain"
+          service_connection: "azure-terraform-cherwell-apply"

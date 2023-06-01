@@ -1,0 +1,39 @@
+name: $(Date:yyyyMMdd)
+
+pool:
+  name: Ubuntu20
+  
+resources:
+  repositories: 
+    - repository: product-terraform
+      type: git
+      name: 'ISM/ism-azure-terraform'
+    - repository: terraform-modules
+      type: git
+      name: 'DevOps/terraform-modules'
+    - repository: tfm-k8s
+      type: git
+      name: TFM/terraform-provisioner-k8s
+      ref: refs/tags/ism
+
+trigger:
+  - none
+  
+stages:
+  - template: /pipeline_templates/terraform_apply.yml@terraform-modules
+    parameters:
+        cloud: "azure"
+        variableGroup: "ism-esm-aks-infra"
+        tfstack_path: "ism-azure-terraform/ism"
+        tfstate_resource_group: 'esm-terraform-states'
+        tfstate_storage_account: 'esmterraformstates'
+        tfstate_container: 'esm-terraform-states'
+        tfstate_key: "nvz-stg"
+        tfvars_name: "nvz-stg"
+        tf_command_extra_params: >-
+          -var="servicePrincipalId=$(servicePrincipalId)"
+          -var="servicePrincipalKey=$(servicePrincipalKey)"
+          -var=acrPullSecret=$(AcrPullSecret)"
+        service_connection_plan: "azure-terraform-esm-plan"
+        service_connection_apply: "azure-terraform-esm-apply"
+        service_connection_security: "azure-terraform-esm-apply"
